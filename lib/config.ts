@@ -1,18 +1,17 @@
 /**
- * Configuración de contacto para el CTA “Diagnóstico gratuito”.
- * Se define con variables de entorno (ver .env.example).
+ * Configuración de marca y contacto.
  */
 export const BRAND = {
   name: "IntegraIA by EMET",
   product: "Diagnóstico de Madurez en IA",
+  /** Suba el logo oficial a /public/logo-integraia.png y se mostrará automáticamente. */
+  logoSrc: "/logo-integraia.png",
 };
 
-const CTA_URL = process.env.NEXT_PUBLIC_CTA_URL?.trim();
-const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "");
+/** WhatsApp de IntegraIA (lada internacional, sin espacios). Se puede sobrescribir por entorno. */
+export const WHATSAPP_NUMBER =
+  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || "5219992978891";
 
-/** Devuelve el enlace del CTA, con mensaje prellenado si se usa WhatsApp. */
-export function ctaHref(message: string): string {
-  if (CTA_URL) return CTA_URL;
-  const text = encodeURIComponent(message);
-  return WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${text}` : `https://wa.me/?text=${text}`;
+export function whatsappHref(message: string): string {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }

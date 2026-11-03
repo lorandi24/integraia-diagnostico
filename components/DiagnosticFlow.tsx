@@ -8,17 +8,21 @@ import { ProgressBar } from "./ProgressBar";
 import { ArrowLeft, ArrowRight, Check } from "./Icons";
 import { GOALS, INDUSTRIES, QUESTIONS, SECTIONS, SECTION_MAP, SIZES, TOTAL_QUESTIONS } from "@/lib/questions";
 import { loadState, saveState } from "@/lib/storage";
-import type { Answers, Goal, Profile } from "@/lib/types";
+import { formatMxPhone, normalizeMxPhone } from "@/lib/lead";
+import type { Answers, Goal, Lead, Profile } from "@/lib/types";
 
 const EMPTY_PROFILE: Profile = { company: "", name: "", industry: "", size: "", goal: "tiempo" };
 const AUTO_ADVANCE_MS = 260;
+/** Paso posterior a la última pregunta: captura del prospecto */
+const LEAD_STEP = TOTAL_QUESTIONS;
 
 export function DiagnosticFlow() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const [profile, setProfile] = useState<Profile>(EMPTY_PROFILE);
   const [answers, setAnswers] = useState<Answers>({});
-  /** -1 = perfil; 0..N-1 = preguntas */
+  const [lead, setLead] = useState<Lead | undefined>(undefined);
+  /** -1 = perfil; 0..N-1 = preguntas; N = datos de contacto */
   const [step, setStep] = useState(-1);
   const [hasReport, setHasReport] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -28,10 +32,11 @@ export function DiagnosticFlow() {
     const saved = loadState();
     if (saved.profile) setProfile(saved.profile);
     setAnswers(saved.answers);
-    setHasReport(Boolean(saved.completedAt));
-    if (saved.profile && !saved.completedAt) {
+    setLead(saved.lead);
+    setHasReport(Boolean(saved.completedAt && saved.lead));
+    if (saved.profile && !(saved.completedAt && saved.lead)) {
       const firstPending = QUESTIONS.findIndex((q) => saved.answers[q.id] === undefined);
-      setStep(firstPending === -1 ? TOTAL_QUESTIONS - 1 : firstPending);
+      setStep(firstPending === -1 ? LEAD_STEP : firstPending);
     }
     setReady(true);
     return () => {
@@ -39,31 +44,40 @@ export function DiagnosticFlow() {
     };
   }, []);
 
+  /** Al terminar las preguntas se piden los datos de contacto antes del reporte. */
   const finish = useCallback(
     (finalAnswers: Answers) => {
-      saveState({ profile, answers: finalAnswers, completedAt: new Date().toISOString() });
-      router.push("/reporte");
+      saveState({ profile, answers: finalAnswers, lead });
+      setStep(LEAD_STEP);
     },
-    [profile, router],
+    [profile, lead],
   );
+
+  const submitLead = (data: Lead) => {
+    const nextProfile = { ...profile, name: data.name, industry: data.industry };
+    setLead(data);
+    setProfile(nextProfile);
+    saveState({ profile: nextProfile, answers, lead: data, completedAt: new Date().toISOString() });
+    router.push("/reporte");
+  };
 
   const select = useCallback(
     (questionId: string, score: number) => {
       const next = { ...answers, [questionId]: score };
       setAnswers(next);
-      saveState({ profile, answers: next });
+      saveState({ profile, answers: next, lead });
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => {
         if (step >= TOTAL_QUESTIONS - 1) finish(next);
         else setStep((s) => s + 1);
       }, AUTO_ADVANCE_MS);
     },
-    [answers, profile, step, finish],
+    [answers, profile, lead, step, finish],
   );
 
   // Atajos de teclado: 1-5 para elegir, ← para regresar
   useEffect(() => {
-    if (step < 0) return;
+    if (step < 0 || step >= TOTAL_QUESTIONS) return;
     const q = QUESTIONS[step];
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
@@ -78,7 +92,7 @@ export function DiagnosticFlow() {
 
   const startQuestions = (e: React.FormEvent) => {
     e.preventDefault();
-    saveState({ profile, answers });
+    saveState({ profile, answers, lead });
     const firstPending = QUESTIONS.findIndex((q) => answers[q.id] === undefined);
     setStep(firstPending === -1 ? 0 : firstPending);
   };
@@ -89,7 +103,7 @@ export function DiagnosticFlow() {
     <main className="bg-circuit flex min-h-dvh flex-col">
       <header className="container-app flex items-center justify-between py-5">
         <Logo />
-        {step >= 0 && (
+        {step >= 0 && step < TOTAL_QUESTIONS && (
           <span className="text-sm text-slate-400">
             {answeredCount}/{TOTAL_QUESTIONS} respondidas
           </span>
@@ -106,6 +120,13 @@ export function DiagnosticFlow() {
             onSubmit={startQuestions}
             hasReport={hasReport}
             hasProgress={answeredCount > 0}
+          />
+        ) : step === LEAD_STEP ? (
+          <LeadStep
+            initial={lead}
+            defaultIndustry={profile.industry}
+            onBack={() => setStep(TOTAL_QUESTIONS - 1)}
+            onSubmit={submitLead}
           />
         ) : (
           <QuestionStep
@@ -155,7 +176,7 @@ function ProfileStep({
       )}
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2">
-        <label className="block">
+        <label className="block sm:col-span-2">
           <span className="mb-2 block text-sm font-medium text-slate-300">Nombre del negocio (opcional)</span>
           <input
             className="field"
@@ -164,17 +185,6 @@ function ProfileStep({
             placeholder="Ej. Ferretería López"
             maxLength={80}
             autoComplete="organization"
-          />
-        </label>
-        <label className="block">
-          <span className="mb-2 block text-sm font-medium text-slate-300">Su nombre (opcional)</span>
-          <input
-            className="field"
-            value={profile.name}
-            onChange={(e) => set("name", e.target.value)}
-            placeholder="Ej. María"
-            maxLength={60}
-            autoComplete="given-name"
           />
         </label>
         <label className="block">
@@ -328,5 +338,122 @@ function QuestionStep({
         </button>
       </div>
     </div>
+  );
+}
+
+/* ─────────────────────────── Datos de contacto ─────────────────────────── */
+
+function LeadStep({
+  initial,
+  defaultIndustry,
+  onBack,
+  onSubmit,
+}: {
+  initial?: Lead;
+  defaultIndustry: string;
+  onBack: () => void;
+  onSubmit: (lead: Lead) => void;
+}) {
+  const [name, setName] = useState(initial?.name ?? "");
+  const [phone, setPhone] = useState(initial ? formatMxPhone(initial.whatsapp) : "");
+  const [industry, setIndustry] = useState(initial?.industry || defaultIndustry);
+  const [touched, setTouched] = useState(false);
+
+  const normalized = normalizeMxPhone(phone);
+  const errors = {
+    name: name.trim().length < 2 ? "Escriba su nombre." : "",
+    phone: !normalized ? "Ingrese un WhatsApp de 10 dígitos (ej. 999 297 8891)." : "",
+    industry: !industry ? "Seleccione el giro de su negocio." : "",
+  };
+  const valid = !errors.name && !errors.phone && !errors.industry;
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setTouched(true);
+    if (!valid || !normalized) return;
+    onSubmit({ name: name.trim(), whatsapp: normalized, industry, createdAt: new Date().toISOString() });
+  };
+
+  return (
+    <form onSubmit={submit} noValidate className="card mx-auto mt-4 w-full max-w-xl animate-fade-up p-6 sm:mt-8 sm:p-10">
+      <ProgressBar value={1} />
+      <p className="eyebrow mt-6">¡Listo! Último paso</p>
+      <h1 className="mt-3 font-display text-2xl font-bold text-white sm:text-3xl">Su reporte está listo</h1>
+      <p className="mt-2 text-slate-400">
+        Indíquenos a quién va dirigido para personalizar su reporte y su roadmap de 90 días.
+      </p>
+
+      <div className="mt-8 space-y-5">
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-slate-300">Nombre *</span>
+          <input
+            className="field"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Ej. María López"
+            maxLength={80}
+            autoComplete="name"
+            aria-invalid={touched && !!errors.name}
+          />
+          {touched && errors.name && <span className="mt-1.5 block text-xs text-amber-400">{errors.name}</span>}
+        </label>
+
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-slate-300">WhatsApp *</span>
+          <div className="flex">
+            <span className="flex items-center rounded-l-xl border border-r-0 border-white/10 bg-abyss-700/60 px-3 text-sm text-slate-400">
+              +52
+            </span>
+            <input
+              className="field rounded-l-none"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="999 297 8891"
+              inputMode="tel"
+              type="tel"
+              autoComplete="tel-national"
+              maxLength={20}
+              aria-invalid={touched && !!errors.phone}
+            />
+          </div>
+          {touched && errors.phone && <span className="mt-1.5 block text-xs text-amber-400">{errors.phone}</span>}
+        </label>
+
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-slate-300">Giro del negocio *</span>
+          <select
+            className="field"
+            value={industry}
+            onChange={(e) => setIndustry(e.target.value)}
+            aria-invalid={touched && !!errors.industry}
+          >
+            <option value="" disabled>
+              Seleccione…
+            </option>
+            {INDUSTRIES.map((i) => (
+              <option key={i}>{i}</option>
+            ))}
+          </select>
+          {touched && errors.industry && (
+            <span className="mt-1.5 block text-xs text-amber-400">{errors.industry}</span>
+          )}
+        </label>
+      </div>
+
+      <p className="mt-6 flex items-start gap-2 text-xs text-slate-500">
+        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal-400" />
+        Sus datos se guardan únicamente en este navegador y se usan para personalizar su reporte y el mensaje de
+        WhatsApp si decide agendar una sesión.
+      </p>
+
+      <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <button type="button" onClick={onBack} className="btn-ghost py-2.5 text-sm">
+          <ArrowLeft className="h-4 w-4" /> Atrás
+        </button>
+        <button type="submit" className="btn-primary">
+          Ver mi reporte <ArrowRight />
+        </button>
+      </div>
+    </form>
   );
 }

@@ -1,12 +1,14 @@
 import { PHASE_META } from "./report";
-import type { Phase, Report } from "./types";
+import { formatMxPhone } from "./lead";
+import type { Lead, Phase, Report } from "./types";
 
 /** Versión en texto plano del reporte, lista para pegar en correo, WhatsApp o Notion. */
-export function reportToText(r: Report): string {
+export function reportToText(r: Report, lead?: Lead): string {
   const date = new Date(r.generatedAt).toLocaleDateString("es-MX", { dateStyle: "long" });
   const lines: string[] = [
     "DIAGNÓSTICO DE MADUREZ EN IA – IntegraIA by EMET",
     `${r.profile.company || "Mi negocio"} · ${r.profile.industry} · ${r.profile.size}`,
+    lead ? `Preparado para: ${lead.name} · WhatsApp ${formatMxPhone(lead.whatsapp)}` : "",
     `Fecha: ${date}`,
     "",
     `SCORE: ${r.score}/100 — Nivel ${r.level.name}`,
@@ -38,5 +40,5 @@ export function reportToText(r: Report): string {
     "SIGUIENTE PASO",
     "Agende su diagnóstico gratuito con IntegraIA by EMET para convertir este roadmap en un plan de implementación a la medida.",
   );
-  return lines.join("\n");
+  return lines.filter((l, i) => l !== "" || i !== 2).join("\n");
 }

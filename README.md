@@ -35,20 +35,26 @@ Verificación de tipos:
 npm run typecheck
 ```
 
-## Configuración del CTA
+## Logo oficial
 
-Copie `.env.example` a `.env.local` y defina **una** de estas variables:
+Suba el archivo a **`public/logo-integraia.png`** y se mostrará automáticamente en el encabezado de todas las páginas y en el PDF del reporte. Mientras no exista, se muestra el logo temporal en SVG.
 
-| Variable | Uso |
-| --- | --- |
-| `NEXT_PUBLIC_CTA_URL` | URL directa (Calendly, formulario, landing). Tiene prioridad. |
-| `NEXT_PUBLIC_WHATSAPP_NUMBER` | Número con lada internacional (ej. `5215512345678`). Abre WhatsApp con un mensaje prellenado que incluye score y nivel. |
+Recomendaciones para el PNG:
+- **Fondo transparente real** (canal alfa). La app usa fondo azul marino; un PNG con fondo blanco o con el patrón de cuadros "incrustado" se verá como un recuadro.
+- Recorte ajustado al logo (sin márgenes vacíos) y ~600 px de ancho. Se muestra a 48 px de alto en móvil y 64 px en escritorio, conservando proporciones.
 
-Si no se define ninguna, el botón abre WhatsApp sin destinatario con el mensaje prellenado.
+## WhatsApp y captura de prospectos
+
+- Antes del reporte se pide **Nombre, WhatsApp (10 dígitos, acepta +52/521) y Giro**. Se guardan solo en `localStorage` (clave `integraia:diagnostico:v1`); no se envían a ningún servidor.
+- El botón **"Agendar diagnóstico gratuito"** abre `wa.me/5219992978891` con el mensaje prellenado:
+  > Hola, acabo de hacer el Diagnóstico de Madurez en IA de IntegraIA. Mi score fue [SCORE] ([NIVEL]). Me gustaría agendar una sesión.
+  
+  seguido de nombre, negocio, giro y WhatsApp del prospecto.
+- Para cambiar el número sin tocar código, defina `NEXT_PUBLIC_WHATSAPP_NUMBER` en `.env.local` (ver `.env.example`).
 
 ## Despliegue
 
-Listo para **Vercel** (importar el repo, sin configuración extra) o cualquier hosting con Node. Agregue las variables de entorno del CTA en el panel del proveedor.
+Listo para **Vercel** (importar el repo, sin configuración extra) o cualquier hosting con Node. Si desea otro número de WhatsApp, agregue `NEXT_PUBLIC_WHATSAPP_NUMBER` en el panel del proveedor.
 
 ## Estructura
 
@@ -59,16 +65,20 @@ app/
   reporte/page.tsx       Reporte personalizado
   globals.css            Estilos base + estilos de impresión/PDF
 components/
-  DiagnosticFlow.tsx     Perfil del negocio + preguntas (auto-avance, teclas 1–5, progreso guardado)
-  ReportView.tsx         Reporte, descarga PDF, copiar, CTA
-  ScoreGauge.tsx, ProgressBar.tsx, Logo.tsx, Icons.tsx
+  DiagnosticFlow.tsx     Perfil + preguntas (auto-avance, teclas 1–5, progreso guardado) + datos de contacto
+  ReportView.tsx         Reporte, descarga PDF, copiar, CTA de WhatsApp
+  Logo.tsx               Logo oficial con respaldo automático al SVG temporal
+  ScoreGauge.tsx, ProgressBar.tsx, Icons.tsx
+public/
+  logo-integraia.png     Logo oficial (subirlo aquí)
 lib/
+  lead.ts                Validación de WhatsApp y mensaje prellenado
   questions.ts           Secciones, 21 preguntas, fortaleza/brecha y acción asociada a cada una
   levels.ts              Niveles de madurez y textos
   report.ts              Motor de scoring, priorización y roadmap
   exportText.ts          Versión en texto plano del reporte
   storage.ts             Persistencia en localStorage
-  config.ts              Enlace del CTA
+  config.ts              Marca, ruta del logo y número de WhatsApp
   types.ts               Tipos compartidos
 ```
 

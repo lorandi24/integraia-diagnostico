@@ -1,10 +1,70 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useId, useRef, useState } from "react";
+import { BRAND } from "@/lib/config";
+
+type Status = "loading" | "ok" | "error";
+
+/** Recuerda entre navegaciones si el PNG existe, para no reintentar en cada página. */
+let cachedStatus: Status = "loading";
+
+/**
+ * Logo oficial desde /public/logo-integraia.png.
+ * Mientras el archivo no exista (o no cargue), muestra el logo temporal en SVG.
+ */
+export function BrandLogo({ className = "h-12 sm:h-16" }: { className?: string }) {
+  const [status, setStatus] = useState<Status>(cachedStatus);
+  const ref = useRef<HTMLImageElement>(null);
+
+  const update = (s: Status) => {
+    cachedStatus = s;
+    setStatus(s);
+  };
+
+  // La imagen puede terminar de cargar antes de que React hidrate el componente.
+  useEffect(() => {
+    const img = ref.current;
+    if (img?.complete) update(img.naturalWidth > 0 ? "ok" : "error");
+  }, []);
+
+  return (
+    <>
+      {status !== "error" && (
+        // eslint-disable-next-line @next/next/no-img-element -- archivo opcional: <img> permite detectar si falta
+        <img
+          ref={ref}
+          src={BRAND.logoSrc}
+          alt={BRAND.name}
+          decoding="async"
+          fetchPriority="high"
+          onLoad={() => update("ok")}
+          onError={() => update("error")}
+          className={status === "ok" ? `${className} w-auto max-w-[220px] object-contain` : "hidden"}
+        />
+      )}
+      {status !== "ok" && <FallbackLogo />}
+    </>
+  );
+}
+
+export function Logo({ className }: { className?: string }) {
+  return (
+    <Link href="/" className="flex items-center" aria-label={`${BRAND.name} – inicio`}>
+      <BrandLogo className={className} />
+    </Link>
+  );
+}
+
+/* ───────── Logo temporal (se reemplaza solo al subir el PNG) ───────── */
 
 export function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
+  // id único: el logo aparece varias veces (header y PDF) y un id repetido rompe el degradado
+  const gid = `logo-g-${useId().replace(/:/g, "")}`;
   return (
     <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
       <defs>
-        <linearGradient id="logo-g" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#00E5FF" />
           <stop offset="1" stopColor="#14B8A6" />
         </linearGradient>
@@ -12,7 +72,7 @@ export function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
       <rect width="64" height="64" rx="14" fill="#07122A" stroke="rgba(0,229,255,.35)" />
       <path
         d="M20 18v28M32 18l-8 28M32 18l8 28M27 36h10"
-        stroke="url(#logo-g)"
+        stroke={`url(#${gid})`}
         strokeWidth="4"
         strokeLinecap="round"
         fill="none"
@@ -23,9 +83,9 @@ export function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
   );
 }
 
-export function Logo() {
+function FallbackLogo() {
   return (
-    <Link href="/" className="flex items-center gap-3" aria-label="IntegraIA by EMET – inicio">
+    <span className="flex items-center gap-3">
       <LogoMark />
       <span className="leading-tight">
         <span className="block font-display text-lg font-bold text-white">
@@ -33,6 +93,6 @@ export function Logo() {
         </span>
         <span className="block text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400">by EMET</span>
       </span>
-    </Link>
+    </span>
   );
 }

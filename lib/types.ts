@@ -57,9 +57,19 @@ export interface Profile {
 
 export type Answers = Record<string, number>;
 
+/** Prospecto capturado antes de mostrar el reporte (solo se guarda localmente). */
+export interface Lead {
+  name: string;
+  /** 10 dígitos, normalizado */
+  whatsapp: string;
+  industry: string;
+  createdAt: string;
+}
+
 export interface DiagnosticState {
   profile: Profile | null;
   answers: Answers;
+  lead?: Lead;
   completedAt?: string;
 }
 

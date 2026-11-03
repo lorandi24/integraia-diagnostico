@@ -3,13 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Logo } from "./Logo";
+import { BrandLogo, Logo } from "./Logo";
 import { ScoreGauge } from "./ScoreGauge";
 import { ArrowRight, Check, Copy, Download, Refresh, Spark, Target, Whatsapp } from "./Icons";
 import { buildReport, NEXT_STEP, PHASE_META } from "@/lib/report";
 import { reportToText } from "@/lib/exportText";
 import { clearState, loadState } from "@/lib/storage";
-import { ctaHref } from "@/lib/config";
+import { whatsappHref } from "@/lib/config";
+import { buildWhatsappMessage } from "@/lib/lead";
 import { LEVELS } from "@/lib/levels";
 import { TOTAL_QUESTIONS } from "@/lib/questions";
 import type { DiagnosticState, Phase, Report } from "@/lib/types";
@@ -24,7 +25,8 @@ export function ReportView() {
 
   useEffect(() => {
     const s = loadState();
-    const complete = s.profile && Object.keys(s.answers).length >= TOTAL_QUESTIONS;
+    // El reporte requiere cuestionario completo y datos de contacto
+    const complete = s.profile && s.lead && Object.keys(s.answers).length >= TOTAL_QUESTIONS;
     if (!complete) {
       router.replace("/diagnostico");
       return;
@@ -37,7 +39,7 @@ export function ReportView() {
     [state],
   );
 
-  if (!report) {
+  if (!report || !state?.lead) {
     return (
       <main className="bg-circuit flex min-h-dvh items-center justify-center">
         <div className="flex items-center gap-3 text-slate-400">
@@ -59,7 +61,7 @@ export function ReportView() {
   };
 
   const handleCopy = async () => {
-    const text = reportToText(report);
+    const text = reportToText(report, state.lead);
     try {
       await navigator.clipboard.writeText(text);
     } catch {
@@ -80,11 +82,7 @@ export function ReportView() {
     router.push("/diagnostico");
   };
 
-  const cta = ctaHref(
-    `Hola, acabo de hacer el Diagnóstico de Madurez en IA. ${
-      report.profile.company ? `Mi negocio es ${report.profile.company}. ` : ""
-    }Obtuve ${report.score}/100 (nivel ${report.level.name}) y me gustaría agendar mi diagnóstico gratuito con IntegraIA.`,
-  );
+  const cta = whatsappHref(buildWhatsappMessage(report, state.lead));
 
   return (
     <main className="bg-circuit min-h-dvh">
@@ -97,9 +95,9 @@ export function ReportView() {
 
       <div className="container-app space-y-6 pb-16 print:space-y-5 print:px-0">
         {/* Encabezado solo para impresión */}
-        <div className="hidden items-center justify-between border-b border-slate-200 pb-4 print:flex">
-          <div>
-            <p className="text-lg font-bold text-[#0b1a3a]">IntegraIA by EMET</p>
+        <div className="print-light hidden items-center justify-between border-b border-slate-200 pb-4 print:flex">
+          <div className="flex items-center gap-3">
+            <BrandLogo className="h-12" />
             <p className="text-xs text-slate-500">Diagnóstico de Madurez en IA</p>
           </div>
           <p className="text-xs text-slate-500">{date}</p>
@@ -113,7 +111,7 @@ export function ReportView() {
           <div>
             <p className="eyebrow">Reporte de madurez en IA · {date}</p>
             <h1 className="mt-3 font-display text-3xl font-bold text-white sm:text-4xl">
-              {report.profile.name ? `${report.profile.name}, ` : ""}
+              {report.profile.name ? `${report.profile.name.split(" ")[0]}, ` : ""}
               {company} está en nivel <span className="text-gradient">{report.level.name}</span>
             </h1>
             <p className="mt-2 font-medium text-electric print:text-[#0891b2]">{report.level.headline}</p>

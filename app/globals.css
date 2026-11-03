@@ -82,6 +82,7 @@
     print-color-adjust: exact;
     box-shadow: none !important;
     backdrop-filter: none !important;
+    animation: none !important;
   }
   .no-print {
     display: none !important;

@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-abyss text-slate-200 antialiased;
+  }
+  ::selection {
+    @apply bg-electric/30 text-white;
+  }
+}
+
+@layer components {
+  .container-app {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+  .card {
+    @apply rounded-2xl border border-white/10 bg-abyss-900/70 backdrop-blur;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-6 py-3.5 font-semibold text-abyss
+      shadow-glow transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-electric
+      focus-visible:ring-offset-2 focus-visible:ring-offset-abyss disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-5 py-3 font-medium
+      text-slate-100 transition hover:border-electric/60 hover:text-white focus:outline-none focus-visible:ring-2
+      focus-visible:ring-electric disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.2em] text-electric;
+  }
+  .text-gradient {
+    @apply bg-brand-gradient bg-clip-text text-transparent;
+  }
+  .field {
+    @apply w-full rounded-xl border border-white/10 bg-abyss-800/60 px-4 py-3 text-white placeholder:text-slate-500
+      focus:border-electric/70 focus:outline-none focus:ring-2 focus:ring-electric/30;
+  }
+}
+
+/* Fondo de circuitos sutil (CSS puro, sin imágenes) */
+.bg-circuit {
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(0, 229, 255, 0.14), transparent 45%),
+    radial-gradient(circle at 90% 30%, rgba(20, 184, 166, 0.12), transparent 40%),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: auto, auto, 44px 44px, 44px 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ───────────── Impresión / PDF ───────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 12mm;
+  }
+  :root {
+    color-scheme: light;
+  }
+  html, body {
+    background: #fff !important;
+    color: #0b1a3a !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .bg-circuit {
+    background: none !important;
+  }
+  .print-light {
+    background: #fff !important;
+    border-color: #d6e4ef !important;
+    color: #0b1a3a !important;
+  }
+  .print-light :where(h1, h2, h3, h4, p, li, span, strong, div) {
+    color: #0b1a3a;
+  }
+  .print-muted {
+    color: #475569 !important;
+  }
+  .print-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .print-break {
+    break-before: page;
+  }
+  .text-gradient {
+    background: none !important;
+    -webkit-text-fill-color: #0891b2 !important;
+    color: #0891b2 !important;
+  }
+}

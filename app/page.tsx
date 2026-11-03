@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { InstallApp } from "@/components/InstallApp";
 import { ArrowRight, Chart, Check, Clock, Map, Shield, Target } from "@/components/Icons";
 import { SECTIONS, TOTAL_QUESTIONS } from "@/lib/questions";
 import { LEVELS } from "@/lib/levels";
@@ -21,9 +22,12 @@ export default function Home() {
     <main className="bg-circuit min-h-dvh">
       <header className="container-app flex items-center justify-between py-5">
         <Logo />
-        <Link href="/diagnostico" className="btn-ghost hidden py-2 text-sm sm:inline-flex">
-          Comenzar <ArrowRight className="h-4 w-4" />
-        </Link>
+        <div className="flex items-center gap-2">
+          <InstallApp />
+          <Link href="/diagnostico" className="btn-ghost hidden py-2 text-sm sm:inline-flex">
+            Comenzar <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </header>
 
       {/* Hero */}

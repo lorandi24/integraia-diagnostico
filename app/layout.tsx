@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   title: "Diagnóstico de Madurez en IA | IntegraIA by EMET",
   description:
     "Descubra en 7 minutos qué tan preparada está su pyme para aprovechar la Inteligencia Artificial y reciba un roadmap de 90 días con acciones concretas.",
+  applicationName: "Diagnóstico IA",
+  appleWebApp: { capable: true, title: "Diagnóstico IA", statusBarStyle: "black-translucent" },
   openGraph: {
     title: "Diagnóstico de Madurez en IA | IntegraIA by EMET",
     description: "Score de madurez, fortalezas, oportunidades y roadmap de 90 días para su pyme.",

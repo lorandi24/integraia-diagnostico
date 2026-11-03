@@ -49,8 +49,20 @@ Para reemplazar el logo basta con sobrescribir `public/logo-integraia.png` (PNG 
 - El botón **"Agendar diagnóstico gratuito"** abre `wa.me/5219992978891` con el mensaje prellenado:
   > Hola, acabo de hacer el Diagnóstico de Madurez en IA de IntegraIA. Mi score fue [SCORE] ([NIVEL]). Me gustaría agendar una sesión.
   
-  seguido de nombre, negocio, giro y WhatsApp del prospecto.
+  seguido de datos del prospecto (nombre, negocio, giro, tamaño, objetivo, WhatsApp), puntaje por área, 3 oportunidades principales y primeros pasos del roadmap.
 - Para cambiar el número sin tocar código, defina `NEXT_PUBLIC_WHATSAPP_NUMBER` en `.env.local` (ver `.env.example`).
+
+## App instalable (PWA)
+
+`app/manifest.ts` y los íconos `public/icon-192.png`, `icon-512.png` e `icon-maskable-512.png` permiten instalarla como app:
+- **Android / Chrome / Edge:** botón **Instalar app** en el encabezado de inicio (o menú ⋮ → *Instalar app*).
+- **iPhone (Safari):** el mismo botón muestra cómo usar *Compartir → Agregar a inicio*.
+
+Una vez instalada se abre a pantalla completa, sin barra del navegador, con el ícono del lobo.
+
+## Cómo recibe IntegraIA los resultados
+
+Los botones **"Enviar mis resultados a IntegraIA"** y **"Agendar diagnóstico gratuito"** abren WhatsApp con un mensaje que incluye datos del prospecto, score, nivel, puntaje por área, 3 oportunidades principales y primeros pasos del roadmap. El prospecto solo tiene que tocar *Enviar*.
 
 ## Despliegue
 

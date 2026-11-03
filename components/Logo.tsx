@@ -4,47 +4,43 @@ import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { BRAND } from "@/lib/config";
 
-type Status = "loading" | "ok" | "error";
-
-/** Recuerda entre navegaciones si el PNG existe, para no reintentar en cada página. */
-let cachedStatus: Status = "loading";
+/** Recuerda entre navegaciones si el PNG falló, para no reintentar en cada página. */
+let failed = false;
 
 /**
- * Logo oficial desde /public/logo-integraia.png.
- * Mientras el archivo no exista (o no cargue), muestra el logo temporal en SVG.
+ * Logo oficial (/public/logo-integraia.png, versión horizontal 638×256).
+ * Se muestra de inmediato; solo si el archivo falta o no carga se usa el logo temporal en SVG.
  */
 export function BrandLogo({ className = "h-12 sm:h-16" }: { className?: string }) {
-  const [status, setStatus] = useState<Status>(cachedStatus);
+  const [error, setError] = useState(failed);
   const ref = useRef<HTMLImageElement>(null);
 
-  const update = (s: Status) => {
-    cachedStatus = s;
-    setStatus(s);
+  const fail = () => {
+    failed = true;
+    setError(true);
   };
 
-  // La imagen puede terminar de cargar antes de que React hidrate el componente.
+  // La imagen puede fallar antes de que React hidrate el componente.
   useEffect(() => {
     const img = ref.current;
-    if (img?.complete) update(img.naturalWidth > 0 ? "ok" : "error");
+    if (img?.complete && img.naturalWidth === 0) fail();
   }, []);
 
+  if (error) return <FallbackLogo />;
+
   return (
-    <>
-      {status !== "error" && (
-        // eslint-disable-next-line @next/next/no-img-element -- archivo opcional: <img> permite detectar si falta
-        <img
-          ref={ref}
-          src={BRAND.logoSrc}
-          alt={BRAND.name}
-          decoding="async"
-          fetchPriority="high"
-          onLoad={() => update("ok")}
-          onError={() => update("error")}
-          className={status === "ok" ? `${className} w-auto max-w-[220px] object-contain` : "hidden"}
-        />
-      )}
-      {status !== "ok" && <FallbackLogo />}
-    </>
+    // eslint-disable-next-line @next/next/no-img-element -- <img> permite detectar si el archivo falta
+    <img
+      ref={ref}
+      src={BRAND.logoSrc}
+      alt={BRAND.name}
+      width={638}
+      height={256}
+      decoding="async"
+      fetchPriority="high"
+      onError={fail}
+      className={`${className} w-auto max-w-[240px] object-contain`}
+    />
   );
 }
 

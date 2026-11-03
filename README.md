@@ -37,11 +37,11 @@ npm run typecheck
 
 ## Logo oficial
 
-Suba el archivo a **`public/logo-integraia.png`** y se mostrará automáticamente en el encabezado de todas las páginas y en el PDF del reporte. Mientras no exista, se muestra el logo temporal en SVG.
+- `public/logo-integraia.png`: versión **horizontal** (lobo + texto, 638×256, fondo transparente, ~31 KB). Se usa en el encabezado de todas las páginas y en el PDF. Se muestra a 48 px de alto en móvil y 64 px en escritorio.
+- `public/logo-integraia-vertical.png`: logo completo **vertical** (556×640, ~68 KB) para usos grandes (banners, portadas).
+- `app/icon.png` y `app/apple-icon.png`: favicon e ícono de iOS con el emblema del lobo.
 
-Recomendaciones para el PNG:
-- **Fondo transparente real** (canal alfa). La app usa fondo azul marino; un PNG con fondo blanco o con el patrón de cuadros "incrustado" se verá como un recuadro.
-- Recorte ajustado al logo (sin márgenes vacíos) y ~600 px de ancho. Se muestra a 48 px de alto en móvil y 64 px en escritorio, conservando proporciones.
+Para reemplazar el logo basta con sobrescribir `public/logo-integraia.png` (PNG con transparencia real, recortado sin márgenes). Si el archivo faltara, la app muestra automáticamente un logo temporal en SVG.
 
 ## WhatsApp y captura de prospectos
 
@@ -70,7 +70,8 @@ components/
   Logo.tsx               Logo oficial con respaldo automático al SVG temporal
   ScoreGauge.tsx, ProgressBar.tsx, Icons.tsx
 public/
-  logo-integraia.png     Logo oficial (subirlo aquí)
+  logo-integraia.png     Logo horizontal (header y PDF)
+  logo-integraia-vertical.png  Logo vertical completo
 lib/
   lead.ts                Validación de WhatsApp y mensaje prellenado
   questions.ts           Secciones, 21 preguntas, fortaleza/brecha y acción asociada a cada una

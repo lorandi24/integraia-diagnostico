@@ -1,0 +1,600 @@
+import type { Goal, Question, Section, SectionId } from "./types";
+
+export const SECTIONS: Section[] = [
+  {
+    id: "estrategia",
+    title: "Estrategia y visión digital",
+    short: "Estrategia",
+    description: "Qué tan claro está el rumbo digital del negocio y cómo se mide.",
+    weight: 0.2,
+  },
+  {
+    id: "procesos",
+    title: "Procesos operativos actuales",
+    short: "Procesos",
+    description: "Atención al cliente, facturación, inventarios y tareas del día a día.",
+    weight: 0.25,
+  },
+  {
+    id: "datos",
+    title: "Datos y herramientas tecnológicas",
+    short: "Datos",
+    description: "Dónde vive la información y qué tan conectados están sus sistemas.",
+    weight: 0.2,
+  },
+  {
+    id: "equipo",
+    title: "Equipo y capacitación",
+    short: "Equipo",
+    description: "Habilidades, actitud y liderazgo del equipo frente a la tecnología.",
+    weight: 0.2,
+  },
+  {
+    id: "presupuesto",
+    title: "Presupuesto y disposición a invertir",
+    short: "Inversión",
+    description: "Recursos de dinero y tiempo disponibles para implementar.",
+    weight: 0.15,
+  },
+];
+
+export const SECTION_MAP = Object.fromEntries(SECTIONS.map((s) => [s.id, s])) as Record<
+  SectionId,
+  Section
+>;
+
+export const GOALS: { id: Goal; label: string }[] = [
+  { id: "ventas", label: "Vender más" },
+  { id: "atencion", label: "Mejorar la atención al cliente" },
+  { id: "tiempo", label: "Ahorrar tiempo en tareas repetitivas" },
+  { id: "costos", label: "Reducir costos y errores" },
+  { id: "orden", label: "Ordenar la operación y tener control" },
+];
+
+export const INDUSTRIES = [
+  "Comercio / tienda / distribución",
+  "Restaurante / alimentos y bebidas",
+  "Servicios profesionales (despacho, consultoría, agencia)",
+  "Salud y bienestar (clínica, consultorio, spa)",
+  "Educación y capacitación",
+  "Manufactura / taller / industria",
+  "Construcción / inmobiliaria",
+  "Turismo / hotelería",
+  "Otro",
+];
+
+export const SIZES = ["1 a 5 personas", "6 a 15 personas", "16 a 50 personas", "51 a 250 personas"];
+
+export const QUESTIONS: Question[] = [
+  // ───────────────────────── Estrategia y visión digital ─────────────────────────
+  {
+    id: "e1",
+    section: "estrategia",
+    text: "¿Qué tan definido está el papel de la tecnología y la IA en los objetivos de su negocio para este año?",
+    options: [
+      { label: "No lo hemos pensado", score: 0 },
+      { label: "Lo hemos platicado, pero sin un plan", score: 1 },
+      { label: "Tenemos algunas ideas puntuales", score: 2 },
+      { label: "Hay objetivos definidos y algunas iniciativas en marcha", score: 3 },
+      { label: "Tenemos un plan digital por escrito con metas y responsables", score: 4 },
+    ],
+    strength: "Existe una visión clara de cómo la tecnología apoya los objetivos del negocio.",
+    gap: "No hay una visión digital definida: las decisiones tecnológicas se toman sobre la marcha.",
+    action: {
+      title: "Definir 3 objetivos de negocio que la IA debe mover",
+      detail:
+        "En una sesión de 2 horas con su equipo clave, elija 3 metas concretas (p. ej. responder clientes en <5 min, reducir 30% el tiempo de cotizar) y asígnele un responsable a cada una.",
+      kpi: "Documento de 1 página con 3 objetivos, responsables y fecha",
+      phase: 1,
+      impact: 3,
+      effort: 1,
+      goals: ["orden", "ventas", "tiempo", "costos", "atencion"],
+    },
+  },
+  {
+    id: "e2",
+    section: "estrategia",
+    text: "¿Cómo describiría su conocimiento personal sobre herramientas de IA como ChatGPT, Claude, Gemini o Copilot?",
+    options: [
+      { label: "No las conozco", score: 0 },
+      { label: "He oído hablar de ellas", score: 1 },
+      { label: "Las uso de vez en cuando para cosas personales", score: 2 },
+      { label: "Las uso con regularidad en mi trabajo", score: 3 },
+      { label: "Ya están integradas en procesos del negocio", score: 4 },
+    ],
+    strength: "Como líder, usted ya conoce y usa herramientas de IA: eso acelera la adopción en el equipo.",
+    gap: "El liderazgo aún no domina las herramientas de IA, lo que frena identificar dónde aplicarlas.",
+    action: {
+      title: "Usar un asistente de IA 15 minutos diarios en tareas reales",
+      detail:
+        "Durante 2 semanas, redacte correos, cotizaciones, publicaciones y resúmenes con un asistente de IA. Guarde las instrucciones (prompts) que mejor le funcionen en un documento compartido.",
+      kpi: "10 prompts útiles documentados y horas ahorradas por semana",
+      tools: ["ChatGPT", "Claude", "Gemini", "Microsoft Copilot"],
+      phase: 1,
+      impact: 2,
+      effort: 1,
+      goals: ["tiempo", "ventas", "orden"],
+    },
+  },
+  {
+    id: "e3",
+    section: "estrategia",
+    text: "¿Cómo encuentran sus clientes a su negocio en internet?",
+    options: [
+      { label: "No tenemos presencia en línea", score: 0 },
+      { label: "Solo redes sociales con poca actividad", score: 1 },
+      { label: "Redes activas y perfil en Google Maps", score: 2 },
+      { label: "Sitio web, redes y Perfil de Negocio de Google optimizados", score: 3 },
+      { label: "Ecosistema digital con campañas y medición (Analytics, embudos)", score: 4 },
+    ],
+    strength: "Su negocio tiene una presencia digital sólida que genera oportunidades de venta.",
+    gap: "La presencia digital es limitada: clientes potenciales no lo encuentran o no lo eligen.",
+    action: {
+      title: "Optimizar Perfil de Negocio de Google y crear contenido con IA",
+      detail:
+        "Complete su Perfil de Negocio de Google (horarios, fotos, catálogo, reseñas) y use IA para planear y redactar 12 publicaciones al mes para redes sociales.",
+      kpi: "Llamadas y mensajes desde Google / redes por mes",
+      tools: ["Perfil de Negocio de Google", "Canva", "Meta Business Suite", "ChatGPT / Claude"],
+      phase: 2,
+      impact: 3,
+      effort: 2,
+      goals: ["ventas"],
+    },
+  },
+  {
+    id: "e4",
+    section: "estrategia",
+    text: "¿Cómo mide los resultados de su negocio?",
+    options: [
+      { label: "No medimos de forma regular", score: 0 },
+      { label: "Solo vemos las ventas totales a fin de mes", score: 1 },
+      { label: "Llevamos algunos indicadores en Excel", score: 2 },
+      { label: "Revisamos un tablero de indicadores cada mes", score: 3 },
+      { label: "Tenemos indicadores en tiempo real para decidir", score: 4 },
+    ],
+    strength: "Toma decisiones con indicadores: la base perfecta para medir el impacto de la IA.",
+    gap: "Sin indicadores claros es difícil saber qué funciona y dónde se pierde dinero.",
+    action: {
+      title: "Crear un tablero con 5 indicadores clave del negocio",
+      detail:
+        "Defina 5 KPIs (ventas, margen, ticket promedio, clientes nuevos, tiempo de respuesta) y conéctelos a un tablero sencillo que se actualice solo.",
+      kpi: "Tablero revisado cada semana por el dueño",
+      tools: ["Looker Studio", "Google Sheets", "Power BI"],
+      phase: 3,
+      impact: 3,
+      effort: 2,
+      goals: ["orden", "costos", "ventas"],
+    },
+  },
+
+  // ───────────────────────── Procesos operativos ─────────────────────────
+  {
+    id: "p1",
+    section: "procesos",
+    text: "¿Cómo atiende a sus clientes por WhatsApp?",
+    options: [
+      { label: "No usamos WhatsApp para el negocio", score: 0 },
+      { label: "Con el WhatsApp personal del dueño o empleados", score: 1 },
+      { label: "WhatsApp Business con catálogo y respuestas rápidas", score: 2 },
+      { label: "WhatsApp Business con etiquetas, mensajes automáticos y seguimiento", score: 3 },
+      { label: "WhatsApp Business API con chatbot o CRM integrado", score: 4 },
+    ],
+    strength: "Su atención por WhatsApp está profesionalizada y lista para automatizarse aún más.",
+    gap: "La atención por WhatsApp depende de personas y celulares personales: se pierden mensajes y ventas.",
+    action: {
+      title: "Profesionalizar WhatsApp Business con respuestas y etiquetas",
+      detail:
+        "Migre a WhatsApp Business, cargue su catálogo, configure mensaje de bienvenida, ausencia y 10 respuestas rápidas redactadas con IA. Use etiquetas para seguir cada prospecto (nuevo, cotizado, cerrado).",
+      kpi: "Tiempo promedio de primera respuesta < 10 minutos",
+      tools: ["WhatsApp Business", "ChatGPT / Claude para redactar respuestas"],
+      phase: 1,
+      impact: 3,
+      effort: 1,
+      goals: ["atencion", "ventas"],
+    },
+  },
+  {
+    id: "p2",
+    section: "procesos",
+    text: "¿Cómo emite su facturación electrónica (CFDI 4.0)?",
+    options: [
+      { label: "Lo hace el contador y no tenemos visibilidad", score: 0 },
+      { label: "Manualmente en el portal del SAT", score: 1 },
+      { label: "Con un sistema de facturación, capturando a mano", score: 2 },
+      { label: "Integrada con el punto de venta o sistema administrativo", score: 3 },
+      { label: "Automatizada y conciliada con banco y contabilidad", score: 4 },
+    ],
+    strength: "Su facturación está integrada, lo que reduce errores y le da control fiscal.",
+    gap: "La facturación es manual o poco visible: hay riesgo de errores, cancelaciones y retrasos de cobro.",
+    action: {
+      title: "Automatizar la facturación y la autofacturación",
+      detail:
+        "Contrate un sistema de facturación conectado a su punto de venta y habilite un portal de autofacturación para clientes. Programe reportes automáticos de cuentas por cobrar.",
+      kpi: "Horas al mes dedicadas a facturar y días promedio de cobro",
+      tools: ["Facturama", "Alegra", "Bind ERP", "CONTPAQi", "Aspel"],
+      phase: 2,
+      impact: 2,
+      effort: 2,
+      goals: ["tiempo", "costos", "orden"],
+    },
+  },
+  {
+    id: "p3",
+    section: "procesos",
+    text: "¿Cómo controla su inventario?",
+    help: "Si su negocio es de servicios, piense en el control de insumos, agenda o capacidad disponible.",
+    options: [
+      { label: "Sin control formal (de memoria)", score: 0 },
+      { label: "Libreta o conteos esporádicos", score: 1 },
+      { label: "Excel actualizado manualmente", score: 2 },
+      { label: "Sistema o punto de venta con existencias en tiempo real", score: 3 },
+      { label: "Sistema con alertas de reorden y pronóstico de demanda", score: 4 },
+    ],
+    strength: "Tiene control de inventario en tiempo real: puede dar el salto a pronósticos con IA.",
+    gap: "El control de inventario es manual: hay riesgo de faltantes, sobrestock y dinero inmovilizado.",
+    action: {
+      title: "Digitalizar inventario con punto de venta y alertas de reorden",
+      detail:
+        "Implemente un punto de venta o sistema de inventario en la nube, haga un conteo inicial y configure mínimos por producto. Use IA sobre el historial de ventas para detectar productos de baja rotación.",
+      kpi: "Quiebres de stock al mes y valor de inventario sin rotación",
+      tools: ["Square", "Loyverse", "Bind ERP", "Odoo", "Google Sheets + IA"],
+      phase: 2,
+      impact: 3,
+      effort: 2,
+      goals: ["costos", "orden"],
+    },
+  },
+  {
+    id: "p4",
+    section: "procesos",
+    text: "¿Cómo elaboran cotizaciones, reportes y documentos frecuentes?",
+    options: [
+      { label: "Desde cero cada vez", score: 0 },
+      { label: "Copiando y editando archivos anteriores", score: 1 },
+      { label: "Con plantillas estandarizadas", score: 2 },
+      { label: "Con plantillas y un sistema que los genera", score: 3 },
+      { label: "Se generan automáticamente con datos del sistema o IA", score: 4 },
+    ],
+    strength: "Sus documentos frecuentes están estandarizados y en buena parte automatizados.",
+    gap: "Cotizaciones y reportes consumen horas de trabajo repetitivo que la IA puede reducir drásticamente.",
+    action: {
+      title: "Crear un kit de plantillas y prompts para cotizar en minutos",
+      detail:
+        "Estandarice sus 3 documentos más frecuentes (cotización, reporte, propuesta) y cree un prompt de IA que los llene a partir de los datos del cliente. Guárdelos en una carpeta compartida.",
+      kpi: "Minutos para enviar una cotización (meta: reducir 50%)",
+      tools: ["Google Docs / Word", "ChatGPT / Claude", "Canva"],
+      phase: 1,
+      impact: 3,
+      effort: 1,
+      goals: ["tiempo", "ventas"],
+    },
+  },
+  {
+    id: "p5",
+    section: "procesos",
+    text: "¿Qué tan documentados están los procesos clave del negocio?",
+    options: [
+      { label: "Todo está en la cabeza del dueño", score: 0 },
+      { label: "Algunos empleados saben cómo se hace", score: 1 },
+      { label: "Algunos procesos están por escrito", score: 2 },
+      { label: "Los procesos clave están documentados (manuales)", score: 3 },
+      { label: "Están documentados, medidos y se mejoran continuamente", score: 4 },
+    ],
+    strength: "Sus procesos están documentados: es mucho más fácil automatizar lo que ya está claro.",
+    gap: "Los procesos no están documentados: el negocio depende de personas clave y es difícil automatizar.",
+    action: {
+      title: "Documentar los 3 procesos críticos con ayuda de IA",
+      detail:
+        "Grabe un audio explicando cómo se hace cada proceso (venta, entrega, cobro). Transcríbalo y pídale a la IA que lo convierta en un manual paso a paso con checklist.",
+      kpi: "3 manuales operativos publicados y usados por el equipo",
+      tools: ["Notas de voz", "ChatGPT / Claude", "Google Docs / Notion"],
+      phase: 1,
+      impact: 2,
+      effort: 1,
+      goals: ["orden", "costos"],
+    },
+  },
+
+  // ───────────────────────── Datos y herramientas ─────────────────────────
+  {
+    id: "d1",
+    section: "datos",
+    text: "¿Dónde guarda la información de sus clientes?",
+    options: [
+      { label: "En la memoria, libretas o chats", score: 0 },
+      { label: "En los contactos del celular y hojas sueltas", score: 1 },
+      { label: "En Excel o Google Sheets", score: 2 },
+      { label: "En un CRM o sistema de ventas", score: 3 },
+      { label: "En un CRM integrado con WhatsApp, ventas y marketing", score: 4 },
+    ],
+    strength: "Tiene una base de clientes centralizada: un activo clave para personalizar con IA.",
+    gap: "La información de clientes está dispersa: no puede dar seguimiento ni volver a venderles.",
+    action: {
+      title: "Centralizar clientes en un CRM sencillo",
+      detail:
+        "Exporte contactos de WhatsApp, Excel y correo a un CRM gratuito o de bajo costo. Defina etapas de venta y registre cada oportunidad nueva desde el día 1.",
+      kpi: "% de prospectos registrados y tasa de cierre mensual",
+      tools: ["HubSpot CRM (gratis)", "Zoho CRM", "Kommo", "Pipedrive"],
+      phase: 2,
+      impact: 3,
+      effort: 2,
+      goals: ["ventas", "atencion", "orden"],
+    },
+  },
+  {
+    id: "d2",
+    section: "datos",
+    text: "¿Qué herramientas de trabajo usa su equipo en el día a día?",
+    options: [
+      { label: "Papel y celular", score: 0 },
+      { label: "Correo personal y archivos en USB o en la computadora", score: 1 },
+      { label: "Office o Google, pero cada quien con sus archivos", score: 2 },
+      { label: "Google Workspace o Microsoft 365 en la nube, colaborando", score: 3 },
+      { label: "Suite en la nube más herramientas especializadas conectadas", score: 4 },
+    ],
+    strength: "Su equipo trabaja en la nube y de forma colaborativa: listo para sumar IA integrada.",
+    gap: "El equipo trabaja con archivos aislados: se duplica trabajo y la información se pierde.",
+    action: {
+      title: "Migrar a una suite en la nube con correo de dominio propio",
+      detail:
+        "Contrate Google Workspace o Microsoft 365, cree correos @sunegocio.com y una estructura de carpetas compartidas. Active las funciones de IA incluidas (Gemini / Copilot).",
+      kpi: "100% del equipo trabajando en carpetas compartidas",
+      tools: ["Google Workspace + Gemini", "Microsoft 365 + Copilot"],
+      phase: 1,
+      impact: 2,
+      effort: 2,
+      goals: ["orden", "tiempo"],
+    },
+  },
+  {
+    id: "d3",
+    section: "datos",
+    text: "¿Sus sistemas (ventas, facturación, inventario, banco) se comunican entre sí?",
+    options: [
+      { label: "No usamos sistemas", score: 0 },
+      { label: "Cada uno por separado; recapturamos todo", score: 1 },
+      { label: "Exportamos e importamos archivos entre ellos", score: 2 },
+      { label: "Algunos se conectan de forma nativa", score: 3 },
+      { label: "Están integrados o automatizados (Zapier, Make, APIs)", score: 4 },
+    ],
+    strength: "Sus sistemas están conectados: la información fluye sin recapturas.",
+    gap: "Los sistemas no se comunican: se pierde tiempo recapturando y aparecen errores.",
+    action: {
+      title: "Automatizar 2 flujos que hoy se recapturan",
+      detail:
+        "Identifique dónde se copia información a mano (p. ej. pedido → factura, formulario → CRM) y automatícelos con una herramienta sin código.",
+      kpi: "Horas de captura eliminadas por semana",
+      tools: ["Make", "Zapier", "n8n", "Power Automate"],
+      phase: 3,
+      impact: 3,
+      effort: 3,
+      goals: ["tiempo", "costos"],
+    },
+  },
+  {
+    id: "d4",
+    section: "datos",
+    text: "¿Cómo protege la información del negocio y los datos personales de sus clientes?",
+    options: [
+      { label: "No tenemos respaldos ni aviso de privacidad", score: 0 },
+      { label: "Hacemos respaldos de vez en cuando", score: 1 },
+      { label: "Respaldo en la nube y aviso de privacidad publicado", score: 2 },
+      { label: "Respaldos automáticos, contraseñas seguras y accesos por rol", score: 3 },
+      { label: "Políticas formales, doble autenticación y cumplimiento de la ley revisado", score: 4 },
+    ],
+    strength: "Cuida la seguridad y privacidad de los datos: indispensable para usar IA con confianza.",
+    gap: "La información no está protegida: hay riesgo de pérdida de datos y de incumplir la Ley Federal de Protección de Datos Personales.",
+    action: {
+      title: "Establecer reglas básicas de seguridad y uso de IA",
+      detail:
+        "Active respaldos automáticos, doble autenticación en correo y bancos, publique su aviso de privacidad y redacte una política de 1 página sobre qué datos NO se deben subir a herramientas de IA.",
+      kpi: "Checklist de seguridad completado al 100%",
+      tools: ["Google Drive / OneDrive", "Gestor de contraseñas (Bitwarden, 1Password)"],
+      phase: 1,
+      impact: 2,
+      effort: 1,
+      goals: ["orden", "costos"],
+    },
+  },
+
+  // ───────────────────────── Equipo y capacitación ─────────────────────────
+  {
+    id: "t1",
+    section: "equipo",
+    text: "¿Su equipo usa herramientas de IA en su trabajo diario?",
+    options: [
+      { label: "Nadie las usa", score: 0 },
+      { label: "Una o dos personas, por iniciativa propia", score: 1 },
+      { label: "Varias personas, pero sin lineamientos", score: 2 },
+      { label: "La mayoría, con casos de uso definidos", score: 3 },
+      { label: "Todo el equipo, con guías, prompts y flujos compartidos", score: 4 },
+    ],
+    strength: "Su equipo ya usa IA en el día a día con casos de uso definidos.",
+    gap: "El equipo no aprovecha la IA: se pierden horas productivas en tareas que podrían acelerarse.",
+    action: {
+      title: "Lanzar 3 casos de uso de IA por área",
+      detail:
+        "Con cada área (ventas, administración, operación) elija 3 tareas repetitivas y cree un prompt estándar para cada una. Compártalos en una biblioteca de prompts del equipo.",
+      kpi: "% del equipo usando IA cada semana y horas ahorradas reportadas",
+      tools: ["ChatGPT Team", "Claude Team", "Gemini para Workspace", "Copilot"],
+      phase: 2,
+      impact: 3,
+      effort: 2,
+      goals: ["tiempo", "atencion", "ventas"],
+    },
+  },
+  {
+    id: "t2",
+    section: "equipo",
+    text: "¿Qué capacitación en tecnología o IA ha recibido su equipo en el último año?",
+    options: [
+      { label: "Ninguna", score: 0 },
+      { label: "Videos o tutoriales por cuenta propia", score: 1 },
+      { label: "Algún curso o taller puntual", score: 2 },
+      { label: "Un programa de capacitación para áreas clave", score: 3 },
+      { label: "Capacitación continua con medición de resultados", score: 4 },
+    ],
+    strength: "Invierte en capacitar a su equipo: la adopción de IA será más rápida y sostenible.",
+    gap: "Falta capacitación: sin habilidades, las herramientas se compran pero no se usan.",
+    action: {
+      title: "Taller práctico de IA aplicada para todo el equipo",
+      detail:
+        "Programe un taller de 4 a 6 horas con ejercicios sobre sus propios procesos (no teoría). Al final, cada persona debe salir con 3 prompts listos para su puesto.",
+      kpi: "Asistencia al 90% y 3 prompts por persona en uso",
+      tools: ["Taller IntegraIA by EMET"],
+      phase: 1,
+      impact: 3,
+      effort: 1,
+      goals: ["tiempo", "atencion", "ventas", "orden", "costos"],
+    },
+  },
+  {
+    id: "t3",
+    section: "equipo",
+    text: "¿Cómo reacciona su equipo ante cambios tecnológicos?",
+    options: [
+      { label: "Con fuerte resistencia", score: 0 },
+      { label: "Con desconfianza o miedo a ser reemplazados", score: 1 },
+      { label: "Neutral: lo hacen si se les indica", score: 2 },
+      { label: "Con interés y disposición", score: 3 },
+      { label: "Proponen mejoras y prueban herramientas nuevas", score: 4 },
+    ],
+    strength: "Su equipo tiene una cultura abierta al cambio: el mejor acelerador de la transformación.",
+    gap: "Existe resistencia o miedo al cambio: sin gestionarlo, cualquier herramienta nueva fracasa.",
+    action: {
+      title: "Comunicar la visión: la IA como apoyo, no como reemplazo",
+      detail:
+        "Explique al equipo por qué se adopta IA, qué tareas les quitará de encima y cómo se reconocerá a quien proponga mejoras. Nombre 1 o 2 “embajadores de IA”.",
+      kpi: "Número de ideas de mejora propuestas por el equipo al mes",
+      phase: 1,
+      impact: 2,
+      effort: 1,
+      goals: ["orden", "tiempo"],
+    },
+  },
+  {
+    id: "t4",
+    section: "equipo",
+    text: "¿Hay alguien responsable de la tecnología y la innovación en su negocio?",
+    options: [
+      { label: "Nadie", score: 0 },
+      { label: "El dueño, cuando tiene tiempo", score: 1 },
+      { label: "Un empleado que “sabe de computadoras”", score: 2 },
+      { label: "Un responsable designado (interno o proveedor externo)", score: 3 },
+      { label: "Un responsable con objetivos y presupuesto de innovación", score: 4 },
+    ],
+    strength: "Hay un responsable claro de tecnología: las iniciativas tienen dueño y seguimiento.",
+    gap: "Nadie es responsable de la innovación: los proyectos digitales se quedan a medias.",
+    action: {
+      title: "Designar un líder de IA con 3 horas semanales",
+      detail:
+        "Asigne a una persona (o a un aliado externo) como responsable de dar seguimiento al roadmap, medir avances y reportar cada 15 días al dueño.",
+      kpi: "Reunión quincenal de avance realizada",
+      phase: 1,
+      impact: 2,
+      effort: 1,
+      goals: ["orden", "costos", "tiempo", "ventas", "atencion"],
+    },
+  },
+
+  // ───────────────────────── Presupuesto y disposición a invertir ─────────────────────────
+  {
+    id: "b1",
+    section: "presupuesto",
+    text: "¿Cuánto invierte al mes en software y herramientas digitales?",
+    options: [
+      { label: "Nada, solo herramientas gratuitas", score: 0 },
+      { label: "Menos de $1,000 MXN", score: 1 },
+      { label: "Entre $1,000 y $5,000 MXN", score: 2 },
+      { label: "Entre $5,000 y $15,000 MXN", score: 3 },
+      { label: "Más de $15,000 MXN, con retorno medido", score: 4 },
+    ],
+    strength: "Ya destina recursos a herramientas digitales: la IA puede potenciar esa inversión.",
+    gap: "La inversión en herramientas digitales es mínima, lo que limita la productividad del equipo.",
+    action: {
+      title: "Auditar el gasto en software y redirigirlo a herramientas con IA",
+      detail:
+        "Liste todas las suscripciones actuales, cancele las que no se usan y redirija ese presupuesto a 1 o 2 herramientas con IA que ataquen sus objetivos prioritarios.",
+      kpi: "Costo mensual en software vs. horas ahorradas",
+      phase: 2,
+      impact: 1,
+      effort: 1,
+      goals: ["costos"],
+    },
+  },
+  {
+    id: "b2",
+    section: "presupuesto",
+    text: "¿Qué tan dispuesto está a invertir en IA en los próximos 6 meses?",
+    options: [
+      { label: "No es prioridad por ahora", score: 0 },
+      { label: "Solo usaría herramientas gratuitas", score: 1 },
+      { label: "Invertiría poco, si veo resultados rápidos", score: 2 },
+      { label: "Destinaría presupuesto a un proyecto piloto", score: 3 },
+      { label: "Tengo un presupuesto anual de transformación digital", score: 4 },
+    ],
+    strength: "Tiene disposición real a invertir: puede pasar de pruebas a resultados medibles.",
+    gap: "La disposición a invertir es baja: conviene empezar con pilotos de bajo costo y retorno rápido.",
+    action: {
+      title: "Lanzar un piloto de IA de bajo costo con meta de retorno",
+      detail:
+        "Elija el proceso con mayor dolor y pruebe una solución por 30 días con un presupuesto tope. Antes de empezar, defina cuánto debe ahorrar o vender para considerarlo exitoso.",
+      kpi: "Retorno del piloto (ahorro o venta extra) vs. inversión",
+      phase: 3,
+      impact: 3,
+      effort: 2,
+      goals: ["ventas", "costos", "tiempo", "atencion", "orden"],
+    },
+  },
+  {
+    id: "b3",
+    section: "presupuesto",
+    text: "¿Cómo decide normalmente una inversión en tecnología?",
+    options: [
+      { label: "No invertimos en tecnología", score: 0 },
+      { label: "Por recomendación o por impulso", score: 1 },
+      { label: "Comparando precios entre opciones", score: 2 },
+      { label: "Con un caso de negocio (ahorro o ingreso esperado)", score: 3 },
+      { label: "Con caso de negocio, piloto y medición de retorno", score: 4 },
+    ],
+    strength: "Evalúa inversiones con caso de negocio: reduce el riesgo de comprar tecnología que no se usa.",
+    gap: "Las inversiones tecnológicas se deciden sin caso de negocio: alto riesgo de gastar sin retorno.",
+    action: {
+      title: "Usar una calculadora de retorno antes de cada compra",
+      detail:
+        "Para cada herramienta, estime: horas ahorradas × costo por hora + ventas adicionales, contra el costo anual. Solo apruebe lo que se pague solo en menos de 6 meses.",
+      kpi: "Inversiones aprobadas con caso de negocio documentado",
+      tools: ["Google Sheets", "ChatGPT / Claude para estimar escenarios"],
+      phase: 2,
+      impact: 2,
+      effort: 1,
+      goals: ["costos"],
+    },
+  },
+  {
+    id: "b4",
+    section: "presupuesto",
+    text: "¿Cuánto tiempo a la semana podrían dedicar usted o su equipo a implementar mejoras?",
+    options: [
+      { label: "Prácticamente nada", score: 0 },
+      { label: "Menos de 1 hora", score: 1 },
+      { label: "Entre 1 y 3 horas", score: 2 },
+      { label: "Entre 3 y 5 horas, con un responsable", score: 3 },
+      { label: "Un equipo con tiempo asignado a proyectos de mejora", score: 4 },
+    ],
+    strength: "Cuenta con tiempo asignado a la mejora: clave para que los proyectos se terminen.",
+    gap: "Falta tiempo para implementar: la operación diaria absorbe todo y la mejora se pospone.",
+    action: {
+      title: "Bloquear 2 horas semanales fijas para el proyecto de IA",
+      detail:
+        "Agende un bloque recurrente en el calendario (p. ej. martes 8–10 am) exclusivo para implementar el roadmap. Trátelo como una cita con un cliente importante.",
+      kpi: "Bloques semanales cumplidos (meta: 10 de 12)",
+      phase: 1,
+      impact: 2,
+      effort: 1,
+      goals: ["orden", "tiempo"],
+    },
+  },
+];
+
+export const TOTAL_QUESTIONS = QUESTIONS.length;

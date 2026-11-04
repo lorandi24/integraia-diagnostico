@@ -97,7 +97,7 @@ export function ReportView() {
         {/* Encabezado solo para impresión */}
         <div className="print-light hidden items-center justify-between border-b border-slate-200 pb-4 print:flex">
           <div className="flex items-center gap-3">
-            <BrandLogo className="h-12" />
+            <BrandLogo className="h-11" />
             <p className="text-xs text-slate-500">Diagnóstico de Madurez en IA</p>
           </div>
           <p className="text-xs text-slate-500">{date}</p>

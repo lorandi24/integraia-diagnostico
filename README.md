@@ -37,11 +37,11 @@ npm run typecheck
 
 ## Logo oficial
 
-- `public/logo-integraia.png`: versión **horizontal** (lobo + texto, 638×256, fondo transparente, ~31 KB). Se usa en el encabezado de todas las páginas y en el PDF. Se muestra a 48 px de alto en móvil y 64 px en escritorio.
-- `public/logo-integraia-vertical.png`: logo completo **vertical** (556×640, ~68 KB) para usos grandes (banners, portadas).
-- `app/icon.png` y `app/apple-icon.png`: favicon e ícono de iOS con el emblema del lobo.
+- `public/logo-integraia.png`: **emblema** del lobo (217×256, fondo transparente, ~20 KB). En el encabezado y el PDF va junto al nombre "IntegraIA by EMET" escrito en texto real, igual que la Calculadora de ROI, para que se vea nítido a cualquier zoom.
+- `public/logo-integraia-vertical.png`: logo completo vertical (607×640, ~73 KB) para banners o portadas.
+- `app/icon.png`, `app/apple-icon.png` y `public/icon-*.png`: favicon e íconos de la app instalable con el emblema.
 
-Para reemplazar el logo basta con sobrescribir `public/logo-integraia.png` (PNG con transparencia real, recortado sin márgenes). Si el archivo faltara, la app muestra automáticamente un logo temporal en SVG.
+Para reemplazar el emblema basta con sobrescribir `public/logo-integraia.png` (PNG con transparencia real, recortado sin márgenes). Si el archivo faltara, la app muestra un emblema temporal en SVG.
 
 ## WhatsApp y captura de prospectos
 

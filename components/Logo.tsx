@@ -8,10 +8,11 @@ import { BRAND } from "@/lib/config";
 let failed = false;
 
 /**
- * Logo oficial (/public/logo-integraia.png, versión horizontal 638×256).
- * Se muestra de inmediato; solo si el archivo falta o no carga se usa el logo temporal en SVG.
+ * Logo oficial: emblema del lobo (/public/logo-integraia.png, 217×256) + nombre en texto real,
+ * igual que la Calculadora de ROI. El texto en HTML se ve nítido a cualquier zoom.
+ * Si el PNG falta o no carga, se usa el emblema temporal en SVG.
  */
-export function BrandLogo({ className = "h-12 sm:h-16" }: { className?: string }) {
+export function BrandLogo({ className = "h-11 sm:h-14" }: { className?: string }) {
   const [error, setError] = useState(failed);
   const ref = useRef<HTMLImageElement>(null);
 
@@ -26,21 +27,37 @@ export function BrandLogo({ className = "h-12 sm:h-16" }: { className?: string }
     if (img?.complete && img.naturalWidth === 0) fail();
   }, []);
 
-  if (error) return <FallbackLogo />;
-
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- <img> permite detectar si el archivo falta
-    <img
-      ref={ref}
-      src={BRAND.logoSrc}
-      alt={BRAND.name}
-      width={638}
-      height={256}
-      decoding="async"
-      fetchPriority="high"
-      onError={fail}
-      className={`${className} w-auto max-w-[240px] object-contain`}
-    />
+    <span className="flex items-center gap-2.5">
+      {error ? (
+        <LogoMark />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element -- <img> permite detectar si el archivo falta
+        <img
+          ref={ref}
+          src={BRAND.logoSrc}
+          alt=""
+          width={217}
+          height={256}
+          decoding="async"
+          fetchPriority="high"
+          onError={fail}
+          className={`${className} w-auto object-contain`}
+        />
+      )}
+      <Wordmark />
+    </span>
+  );
+}
+
+function Wordmark() {
+  return (
+    <span className="leading-tight">
+      <span className="block font-display text-lg font-bold text-white sm:text-xl">
+        Integra<span className="text-gradient">IA</span>
+      </span>
+      <span className="block text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400">by EMET</span>
+    </span>
   );
 }
 
@@ -52,7 +69,7 @@ export function Logo({ className }: { className?: string }) {
   );
 }
 
-/* ───────── Logo temporal (se reemplaza solo al subir el PNG) ───────── */
+/* ───────── Emblema temporal (solo si falta el PNG) ───────── */
 
 export function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
   // id único: el logo aparece varias veces (header y PDF) y un id repetido rompe el degradado
@@ -76,19 +93,5 @@ export function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
       <circle cx="46" cy="18" r="4" fill="#00E5FF" />
       <path d="M46 22v8h-6" stroke="#14B8A6" strokeWidth="3" fill="none" strokeLinecap="round" />
     </svg>
-  );
-}
-
-function FallbackLogo() {
-  return (
-    <span className="flex items-center gap-3">
-      <LogoMark />
-      <span className="leading-tight">
-        <span className="block font-display text-lg font-bold text-white">
-          Integra<span className="text-gradient">IA</span>
-        </span>
-        <span className="block text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400">by EMET</span>
-      </span>
-    </span>
   );
 }

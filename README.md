@@ -37,11 +37,11 @@ npm run typecheck
 
 ## Logo oficial
 
-- `public/logo-integraia.png`: versión **horizontal** (lobo + texto, 638×256, fondo transparente, ~31 KB). Se usa en el encabezado de todas las páginas y en el PDF. Se muestra a 48 px de alto en móvil y 64 px en escritorio.
-- `public/logo-integraia-vertical.png`: logo completo **vertical** (556×640, ~68 KB) para usos grandes (banners, portadas).
-- `app/icon.png` y `app/apple-icon.png`: favicon e ícono de iOS con el emblema del lobo.
+- `public/logo-integraia.png`: **emblema** del lobo (217×256, fondo transparente, ~20 KB). En el encabezado y el PDF va junto al nombre "IntegraIA by EMET" escrito en texto real, igual que la Calculadora de ROI, para que se vea nítido a cualquier zoom.
+- `public/logo-integraia-vertical.png`: logo completo vertical (607×640, ~73 KB) para banners o portadas.
+- `app/icon.png`, `app/apple-icon.png` y `public/icon-*.png`: favicon e íconos de la app instalable con el emblema.
 
-Para reemplazar el logo basta con sobrescribir `public/logo-integraia.png` (PNG con transparencia real, recortado sin márgenes). Si el archivo faltara, la app muestra automáticamente un logo temporal en SVG.
+Para reemplazar el emblema basta con sobrescribir `public/logo-integraia.png` (PNG con transparencia real, recortado sin márgenes). Si el archivo faltara, la app muestra un emblema temporal en SVG.
 
 ## WhatsApp y captura de prospectos
 
@@ -49,8 +49,20 @@ Para reemplazar el logo basta con sobrescribir `public/logo-integraia.png` (PNG 
 - El botón **"Agendar diagnóstico gratuito"** abre `wa.me/5219992978891` con el mensaje prellenado:
   > Hola, acabo de hacer el Diagnóstico de Madurez en IA de IntegraIA. Mi score fue [SCORE] ([NIVEL]). Me gustaría agendar una sesión.
   
-  seguido de nombre, negocio, giro y WhatsApp del prospecto.
+  seguido de datos del prospecto (nombre, negocio, giro, tamaño, objetivo, WhatsApp), puntaje por área, 3 oportunidades principales y primeros pasos del roadmap.
 - Para cambiar el número sin tocar código, defina `NEXT_PUBLIC_WHATSAPP_NUMBER` en `.env.local` (ver `.env.example`).
+
+## App instalable (PWA)
+
+`app/manifest.ts` y los íconos `public/icon-192.png`, `icon-512.png` e `icon-maskable-512.png` permiten instalarla como app:
+- **Android / Chrome / Edge:** botón **Instalar app** en el encabezado de inicio (o menú ⋮ → *Instalar app*).
+- **iPhone (Safari):** el mismo botón muestra cómo usar *Compartir → Agregar a inicio*.
+
+Una vez instalada se abre a pantalla completa, sin barra del navegador, con el ícono del lobo.
+
+## Cómo recibe IntegraIA los resultados
+
+Los botones **"Enviar mis resultados a IntegraIA"** y **"Agendar diagnóstico gratuito"** abren WhatsApp con un mensaje que incluye datos del prospecto, score, nivel, puntaje por área, 3 oportunidades principales y primeros pasos del roadmap. El prospecto solo tiene que tocar *Enviar*.
 
 ## Despliegue
 

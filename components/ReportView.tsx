@@ -97,7 +97,7 @@ export function ReportView() {
         {/* Encabezado solo para impresión */}
         <div className="print-light hidden items-center justify-between border-b border-slate-200 pb-4 print:flex">
           <div className="flex items-center gap-3">
-            <BrandLogo className="h-12" />
+            <BrandLogo className="h-11" />
             <p className="text-xs text-slate-500">Diagnóstico de Madurez en IA</p>
           </div>
           <p className="text-xs text-slate-500">{date}</p>
@@ -138,8 +138,11 @@ export function ReportView() {
         </section>
 
         {/* Acciones */}
-        <div className="no-print flex flex-col gap-3 sm:flex-row">
-          <button onClick={handlePrint} className="btn-primary">
+        <div className="no-print flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <a href={cta} target="_blank" rel="noopener noreferrer" className="btn-primary">
+            <Whatsapp /> Enviar mis resultados a IntegraIA
+          </a>
+          <button onClick={handlePrint} className="btn-ghost">
             <Download /> Descargar PDF
           </button>
           <button onClick={handleCopy} className="btn-ghost" aria-live="polite">
@@ -296,9 +299,14 @@ export function ReportView() {
                 ))}
               </ul>
             </div>
-            <a href={cta} target="_blank" rel="noopener noreferrer" className="btn-primary no-print text-base">
-              <Whatsapp /> Agendar diagnóstico gratuito
-            </a>
+            <div className="no-print flex flex-col items-stretch gap-2 md:items-end">
+              <a href={cta} target="_blank" rel="noopener noreferrer" className="btn-primary text-base">
+                <Whatsapp /> Agendar diagnóstico gratuito
+              </a>
+              <p className="text-center text-xs text-slate-500 md:text-right">
+                Se abrirá WhatsApp con su score y resultados listos para enviar.
+              </p>
+            </div>
           </div>
         </section>
 
